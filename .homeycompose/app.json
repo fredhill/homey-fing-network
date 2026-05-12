@@ -1,0 +1,43 @@
+{
+  "id": "com.fredhill.fing",
+  "version": "1.0.0",
+  "compatibility": ">=13.0.0",
+  "sdk": 3,
+  "runtime": "python",
+  "pythonVersion": "3.13",
+  "name": {
+    "en": "Fing Network Monitor"
+  },
+  "description": {
+    "en": "Track network device presence and detect unknown devices using your Fingbox."
+  },
+  "tags": {
+    "en": [
+      "fing",
+      "fingbox",
+      "network",
+      "presence",
+      "wifi",
+      "lan",
+      "security"
+    ]
+  },
+  "category": ["security"],
+  "brandColor": "#00b0b0",
+  "pythonDependencies": [
+    "fing-agent-api>=1.0.3"
+  ],
+  "permissions": [],
+  "images": {
+    "small": "/assets/images/small.png",
+    "large": "/assets/images/large.png",
+    "xlarge": "/assets/images/xlarge.png"
+  },
+  "author": {
+    "name": "Fred Hill",
+    "email": "fredhill@mac.com"
+  },
+  "homepage": "https://github.com/fredhill/homey-fing-network",
+  "support": "https://github.com/fredhill/homey-fing-network/issues",
+  "source": "https://github.com/fredhill/homey-fing-network"
+}

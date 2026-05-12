@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Network device icon: laptop/device silhouette with wifi signal -->
+  <circle cx="50" cy="50" r="50" fill="#00b0b0"/>
+  <!-- Device body (laptop base) -->
+  <rect x="22" y="54" width="56" height="7" rx="3" ry="3" fill="#fff"/>
+  <!-- Screen -->
+  <rect x="30" y="33" width="40" height="22" rx="3" ry="3" fill="#fff" opacity="0.9"/>
+  <!-- Wifi signal arcs on screen -->
+  <path d="M44 50 Q50 42 56 50" stroke="#00b0b0" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <path d="M40 50 Q50 37 60 50" stroke="#00b0b0" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.6"/>
+  <circle cx="50" cy="50" r="2.5" fill="#00b0b0"/>
+</svg>

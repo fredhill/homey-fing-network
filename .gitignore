@@ -1,0 +1,28 @@
+# Local development secrets — never commit
+env.json
+
+# Homey build artifacts
+.homeybuild/
+
+# Pre-compiled Python packages — rebuild with: npx homey app dependencies install
+python_packages/
+
+# Python bytecode
+__pycache__/
+*.pyc
+*.pyo
+
+# Node
+node_modules/
+package-lock.json
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Planning docs (not part of the app)
+Claude_Code_Handoff_*.md
+
+# Claude Code local settings
+.claude/

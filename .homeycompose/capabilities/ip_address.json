@@ -1,0 +1,12 @@
+{
+  "type": "string",
+  "title": {
+    "en": "IP Address"
+  },
+  "desc": {
+    "en": "Current IP address of the network device."
+  },
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor"
+}

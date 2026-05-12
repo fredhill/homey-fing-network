@@ -1,0 +1,51 @@
+{
+  "id": "new_unknown_device",
+  "title": {
+    "en": "An unknown device appeared on the network"
+  },
+  "titleFormatted": {
+    "en": "An unknown device appeared on [[device]]'s network"
+  },
+  "args": [
+    {
+      "name": "device",
+      "type": "device",
+      "placeholder": {
+        "en": "Which Fingbox?"
+      },
+      "filter": "driver_id=fingbox"
+    }
+  ],
+  "tokens": [
+    {
+      "name": "device_name",
+      "type": "string",
+      "title": {
+        "en": "Device Name"
+      },
+      "example": {
+        "en": "iPhone"
+      }
+    },
+    {
+      "name": "mac_address",
+      "type": "string",
+      "title": {
+        "en": "MAC Address"
+      },
+      "example": {
+        "en": "AA:BB:CC:DD:EE:FF"
+      }
+    },
+    {
+      "name": "ip_address",
+      "type": "string",
+      "title": {
+        "en": "IP Address"
+      },
+      "example": {
+        "en": "10.0.0.100"
+      }
+    }
+  ]
+}

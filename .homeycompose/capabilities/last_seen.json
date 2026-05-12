@@ -1,0 +1,12 @@
+{
+  "type": "string",
+  "title": {
+    "en": "Last Seen"
+  },
+  "desc": {
+    "en": "Timestamp of the last time Fing detected a state change for this device."
+  },
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor"
+}

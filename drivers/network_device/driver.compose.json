@@ -1,0 +1,35 @@
+{
+  "name": { "en": "Network Device" },
+  "class": "sensor",
+  "capabilities": [
+    "alarm_presence",
+    "ip_address",
+    "last_seen"
+  ],
+  "capabilitiesOptions": {
+    "alarm_presence": {
+      "title": { "en": "Presence" }
+    },
+    "ip_address": {
+      "title": { "en": "IP Address" }
+    },
+    "last_seen": {
+      "title": { "en": "Last Seen" }
+    }
+  },
+  "images": {
+    "small": "/drivers/network_device/assets/images/small.png",
+    "large": "/drivers/network_device/assets/images/large.png"
+  },
+  "pair": [
+    {
+      "id": "list_devices",
+      "template": "list_devices",
+      "navigation": { "next": "add_devices" }
+    },
+    {
+      "id": "add_devices",
+      "template": "add_devices"
+    }
+  ]
+}

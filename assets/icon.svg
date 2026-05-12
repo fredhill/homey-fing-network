@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- App icon: teal network hub with radiating nodes -->
+  <circle cx="50" cy="50" r="50" fill="#00b0b0"/>
+  <!-- Central hub dot -->
+  <circle cx="50" cy="50" r="10" fill="#fff"/>
+  <!-- Radiating lines -->
+  <line x1="50" y1="50" x2="50" y2="18" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+  <line x1="50" y1="50" x2="50" y2="82" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+  <line x1="50" y1="50" x2="18" y2="50" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+  <line x1="50" y1="50" x2="82" y2="50" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+  <line x1="50" y1="50" x2="27" y2="27" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+  <line x1="50" y1="50" x2="73" y2="73" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+  <line x1="50" y1="50" x2="73" y2="27" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+  <line x1="50" y1="50" x2="27" y2="73" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+  <!-- Outer node dots -->
+  <circle cx="50" cy="18" r="5" fill="#fff"/>
+  <circle cx="50" cy="82" r="5" fill="#fff"/>
+  <circle cx="18" cy="50" r="5" fill="#fff"/>
+  <circle cx="82" cy="50" r="5" fill="#fff"/>
+  <circle cx="27" cy="27" r="5" fill="#fff"/>
+  <circle cx="73" cy="73" r="5" fill="#fff"/>
+  <circle cx="73" cy="27" r="5" fill="#fff"/>
+  <circle cx="27" cy="73" r="5" fill="#fff"/>
+</svg>

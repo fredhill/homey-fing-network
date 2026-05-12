@@ -1,0 +1,5 @@
+{
+  "1.0.0": {
+    "en": "Initial release. Pair your Fingbox as a hub device, add individual network devices with presence detection, and trigger flows when unknown devices appear on your network."
+  }
+}

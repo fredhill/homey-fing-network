@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fing Network Monitor Settings</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #fff;
+      padding: 24px;
+      max-width: 480px;
+      color: #333;
+    }
+
+    h2 {
+      font-size: 17px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      color: #111;
+    }
+
+    .field {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 6px;
+      color: #555;
+    }
+
+    input[type="number"] {
+      width: 120px;
+      padding: 9px 12px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+      color: #111;
+      transition: border-color 0.15s;
+    }
+
+    input[type="number"]:focus {
+      outline: none;
+      border-color: #00b0b0;
+    }
+
+    .hint {
+      font-size: 12px;
+      color: #888;
+      margin-top: 5px;
+    }
+
+    button {
+      padding: 10px 24px;
+      background: #00b0b0;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    button:hover { background: #009090; }
+
+    #status {
+      display: none;
+      margin-top: 12px;
+      font-size: 13px;
+      color: #00b0b0;
+    }
+
+    #error {
+      display: none;
+      margin-top: 12px;
+      font-size: 13px;
+      color: #c0392b;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Fing Network Monitor Settings</h2>
+
+  <div class="field">
+    <label for="poll_interval">Poll Interval (seconds)</label>
+    <input type="number" id="poll_interval" min="10" max="300" value="30" />
+    <div class="hint">
+      How often to query the Fingbox for device updates.<br />
+      Min: 10 s &nbsp;|&nbsp; Max: 300 s &nbsp;|&nbsp; Default: 30 s
+    </div>
+  </div>
+
+  <button id="save-btn">Save</button>
+  <div id="status">✓ Settings saved</div>
+  <div id="error"></div>
+
+  <script src="/homey.js" data-origin="settings"></script>
+  <script>
+    function onHomeyReady(Homey) {
+      Homey.ready();
+
+      var input    = document.getElementById('poll_interval');
+      var saveBtn  = document.getElementById('save-btn');
+      var statusEl = document.getElementById('status');
+      var errorEl  = document.getElementById('error');
+
+      // Load existing value
+      Homey.get('poll_interval', function (err, value) {
+        if (!err && value !== null && value !== undefined) {
+          input.value = value;
+        }
+      });
+
+      // Save on button click
+      saveBtn.addEventListener('click', function () {
+        statusEl.style.display = 'none';
+        errorEl.style.display  = 'none';
+
+        var val = parseInt(input.value, 10);
+
+        if (isNaN(val) || val < 10 || val > 300) {
+          errorEl.textContent   = 'Poll interval must be between 10 and 300 seconds.';
+          errorEl.style.display = 'block';
+          return;
+        }
+
+        Homey.set('poll_interval', val, function (err) {
+          if (err) {
+            errorEl.textContent   = 'Failed to save settings: ' + (err.message || err);
+            errorEl.style.display = 'block';
+          } else {
+            statusEl.style.display = 'block';
+            // Auto-hide confirmation after 3 seconds
+            setTimeout(function () {
+              statusEl.style.display = 'none';
+            }, 3000);
+          }
+        });
+      });
+    }
+  </script>
+
+</body>
+</html>

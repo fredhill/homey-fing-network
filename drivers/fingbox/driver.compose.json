@@ -1,0 +1,65 @@
+{
+  "name": { "en": "Fingbox" },
+  "class": "other",
+  "capabilities": [
+    "alarm_connectivity",
+    "measure_generic.online_count"
+  ],
+  "capabilitiesOptions": {
+    "alarm_connectivity": {
+      "title": { "en": "Connected" }
+    },
+    "measure_generic.online_count": {
+      "title": { "en": "Online Devices" },
+      "decimals": 0,
+      "units": ""
+    }
+  },
+  "images": {
+    "small": "/drivers/fingbox/assets/images/small.png",
+    "large": "/drivers/fingbox/assets/images/large.png"
+  },
+  "pair": [
+    {
+      "id": "start",
+      "template": "start_pairing",
+      "options": {
+        "title": { "en": "Connect your Fingbox" },
+        "body": { "en": "You will need the IP address, port (default 49090), and API key from the Fing app.\n\nTo find your API key: open the Fing app → Fingbox → Settings → Local API → Enable and copy the key.\n\nNote: Local API must be enabled in the Fing web app under Manage → Settings → Local API." }
+      },
+      "navigation": { "next": "credentials" }
+    },
+    {
+      "id": "credentials",
+      "navigation": { "next": "add_devices" }
+    },
+    {
+      "id": "add_devices",
+      "template": "add_devices"
+    }
+  ],
+  "settings": [
+    {
+      "type": "group",
+      "label": { "en": "Connection" },
+      "children": [
+        {
+          "id": "ip",
+          "type": "text",
+          "label": { "en": "IP Address" },
+          "value": "",
+          "hint": { "en": "Local IP address of your Fingbox (e.g. 10.0.0.75)" }
+        },
+        {
+          "id": "port",
+          "type": "number",
+          "label": { "en": "Port" },
+          "value": 49090,
+          "min": 1,
+          "max": 65535,
+          "hint": { "en": "Fing Local API port (default: 49090)" }
+        }
+      ]
+    }
+  ]
+}

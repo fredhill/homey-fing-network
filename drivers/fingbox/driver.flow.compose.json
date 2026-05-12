@@ -1,0 +1,7 @@
+{
+  "triggers": [
+    {
+      "$ref": "flow/triggers/new_unknown_device"
+    }
+  ]
+}

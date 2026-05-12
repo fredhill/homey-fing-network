@@ -1,0 +1,92 @@
+{
+  "app": {
+    "name": "Fing Network Monitor",
+    "description": "Track network device presence and detect unknown devices using your Fingbox."
+  },
+
+  "drivers": {
+    "fingbox": {
+      "name": "Fingbox",
+      "description": "Your Fingbox hardware unit. Acts as the hub for all network device monitoring."
+    },
+    "network_device": {
+      "name": "Network Device",
+      "description": "A network device tracked by Fing. Provides presence detection and IP address monitoring."
+    }
+  },
+
+  "pair": {
+    "fingbox": {
+      "start": {
+        "title": "Connect your Fingbox",
+        "body": "You will need the IP address, port (default 49090), and API key from the Fing app.\n\nTo find your API key: open the Fing app → Fingbox → Settings → Local API → Enable and copy the key."
+      },
+      "credentials": {
+        "title": "Enter Fingbox Details",
+        "label_ip": "IP Address",
+        "placeholder_ip": "10.0.0.75",
+        "hint_ip": "Local IP address of your Fingbox",
+        "label_port": "Port",
+        "hint_port": "Fing Local API port (default: 49090)",
+        "label_key": "API Key",
+        "placeholder_key": "Paste your Fing Local API key",
+        "hint_key": "Find this in the Fing app: Fingbox → Settings → Local API",
+        "button_connect": "Connect",
+        "button_connecting": "Connecting…"
+      },
+      "error": {
+        "missing_fields": "Please enter an IP address and API key.",
+        "connect_error": "Could not connect to Fingbox. Check the IP address and port, and make sure the Fingbox is online.",
+        "timeout": "Connection timed out. Check that the Fingbox is powered on and reachable.",
+        "invalid_key": "Invalid API key. Check the key in the Fing app under Fingbox → Settings → Local API.",
+        "http_error": "Fingbox returned an unexpected error.",
+        "no_credentials": "No connection details available. Please go back and enter your Fingbox credentials.",
+        "unknown": "Unexpected error during pairing"
+      }
+    },
+    "network_device": {
+      "list_devices": {
+        "title": "Select devices to add",
+        "loading": "Fetching device list from Fingbox…"
+      },
+      "error": {
+        "no_fingbox": "Please add your Fingbox first before adding network devices.",
+        "fingbox_offline": "Fingbox is currently unreachable. Please check connectivity and try again.",
+        "fetch_failed": "Failed to fetch device list from Fingbox.",
+        "no_devices": "No devices found on your Fing network. Make sure Fing has scanned your network recently.",
+        "all_paired": "All Fing-tracked devices are already added to Homey. You can add more when new devices appear on your network."
+      }
+    }
+  },
+
+  "device": {
+    "fingbox": {
+      "unavailable": "Fingbox is unreachable"
+    },
+    "network_device": {
+      "unavailable": "Device state unknown"
+    }
+  },
+
+  "settings": {
+    "poll_interval": {
+      "label": "Poll Interval (seconds)",
+      "hint": "How often to check your Fingbox for device updates. Min: 10, Max: 300. Default: 30.",
+      "saved": "Settings saved",
+      "error_range": "Poll interval must be between 10 and 300 seconds."
+    }
+  },
+
+  "flow": {
+    "triggers": {
+      "new_unknown_device": {
+        "title": "An unknown device appeared on the network",
+        "tokens": {
+          "device_name": "Device Name",
+          "mac_address": "MAC Address",
+          "ip_address": "IP Address"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "type": "boolean",
+  "title": {
+    "en": "Connected"
+  },
+  "desc": {
+    "en": "Whether the Fingbox is reachable on the local network."
+  },
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor"
+}
