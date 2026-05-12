@@ -27,7 +27,7 @@
     "security"
   ],
   "brandColor": "#00b0b0",
-  "pythonDependencies": [
+  "pythonPackages": [
     "fing-agent-api>=1.0.3"
   ],
   "permissions": [],
