@@ -14,36 +14,42 @@ Capabilities:
 """
 
 import asyncio
+from datetime import datetime, timezone
 from homey import device
 
 
 def _fmt_timestamp(raw: str) -> str:
     """
-    Convert a Fing ISO timestamp to a clean "YYYY-MM-DD HH:MM" string.
+    Convert a Fing UTC timestamp to a clean "YYYY-MM-DD HH:MM" string in the
+    system's local timezone (i.e. whatever timezone the Raspberry Pi is set to).
 
-    Handles common formats:
-      "2026-05-12T21:06:32Z"    → "2026-05-12 21:06"
-      "2026-05-12T21:06:32"     → "2026-05-12 21:06"
-      "2026-05-12T21:06:32+00:00" → "2026-05-12 21:06"
-      "2026-05-12 21:06:32"     → "2026-05-12 21:06"
+    Fing always returns UTC timestamps, e.g.:
+      "2026-05-12T21:06:32Z"      (Z suffix = UTC)
+      "2026-05-12T21:06:32+00:00" (explicit UTC offset)
+      "2026-05-12T21:06:32"       (no suffix — also treated as UTC)
+
     Falls back to the original string if parsing fails.
     """
     if not raw:
         return raw
     try:
-        # Normalise: strip timezone suffix, replace T separator
         normalised = raw.strip()
-        # Remove trailing Z or offset (+HH:MM / -HH:MM)
-        for sep in ("Z", "+", "-"):
-            if sep in normalised[10:]:          # only after the date portion
-                normalised = normalised[:normalised.index(sep, 10)]
-        # Replace T separator with a space
-        normalised = normalised.replace("T", " ")
-        # Keep only up to HH:MM (drop seconds and sub-seconds)
-        parts = normalised.split(" ")
-        if len(parts) == 2:
-            time_part = parts[1][:5]            # "HH:MM"
-            return f"{parts[0]} {time_part}"
+
+        # datetime.fromisoformat() (Python 3.11+) understands +HH:MM offsets
+        # but NOT the trailing "Z" shorthand — replace it first.
+        if normalised.endswith("Z"):
+            normalised = normalised[:-1] + "+00:00"
+
+        dt = datetime.fromisoformat(normalised)
+
+        # If the timestamp has no timezone info assume it is UTC
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=timezone.utc)
+
+        # Convert to the host system's local timezone (e.g. America/New_York)
+        dt_local = dt.astimezone()
+
+        return dt_local.strftime("%Y-%m-%d %H:%M")
     except Exception:
         pass
     return raw

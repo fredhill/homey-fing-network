@@ -9,22 +9,23 @@ Pairing:
 """
 
 import httpx
+from datetime import datetime, timezone
 from homey import driver
 
-# Shared with device.py — duplicated here to keep drivers self-contained
+
+# Duplicated from device.py — keeps drivers self-contained
 def _fmt_timestamp(raw: str) -> str:
-    """Convert Fing ISO timestamp to 'YYYY-MM-DD HH:MM'."""
+    """Convert a Fing UTC timestamp to 'YYYY-MM-DD HH:MM' in local system time."""
     if not raw:
         return raw
     try:
         normalised = raw.strip()
-        for sep in ("Z", "+", "-"):
-            if sep in normalised[10:]:
-                normalised = normalised[:normalised.index(sep, 10)]
-        normalised = normalised.replace("T", " ")
-        parts = normalised.split(" ")
-        if len(parts) == 2:
-            return f"{parts[0]} {parts[1][:5]}"
+        if normalised.endswith("Z"):
+            normalised = normalised[:-1] + "+00:00"
+        dt = datetime.fromisoformat(normalised)
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=timezone.utc)
+        return dt.astimezone().strftime("%Y-%m-%d %H:%M")
     except Exception:
         pass
     return raw
