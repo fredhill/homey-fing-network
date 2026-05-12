@@ -185,14 +185,20 @@
       },
       "class": "sensor",
       "capabilities": [
+        "presence_status",
         "alarm_presence",
         "ip_address",
         "last_seen"
       ],
       "capabilitiesOptions": {
+        "presence_status": {
+          "title": {
+            "en": "Status"
+          }
+        },
         "alarm_presence": {
           "title": {
-            "en": "Presence"
+            "en": "Away"
           }
         },
         "ip_address": {
@@ -275,6 +281,32 @@
       "setable": false,
       "uiComponent": "sensor",
       "decimals": 0
+    },
+    "presence_status": {
+      "type": "enum",
+      "title": {
+        "en": "Status"
+      },
+      "desc": {
+        "en": "Whether the device is currently present on the network."
+      },
+      "values": [
+        {
+          "id": "present",
+          "title": {
+            "en": "Present"
+          }
+        },
+        {
+          "id": "away",
+          "title": {
+            "en": "Away"
+          }
+        }
+      ],
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor"
     }
   }
 }

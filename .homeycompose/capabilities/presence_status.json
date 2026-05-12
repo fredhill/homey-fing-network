@@ -1,0 +1,16 @@
+{
+  "type": "enum",
+  "title": {
+    "en": "Status"
+  },
+  "desc": {
+    "en": "Whether the device is currently present on the network."
+  },
+  "values": [
+    { "id": "present", "title": { "en": "Present" } },
+    { "id": "away",    "title": { "en": "Away"    } }
+  ],
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor"
+}

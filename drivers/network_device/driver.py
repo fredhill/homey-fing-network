@@ -96,16 +96,17 @@ class NetworkDeviceDriver(driver.Driver):
                     "fing_name":   dev.name or "",
                 },
                 "capabilities": [
+                    "presence_status",
                     "alarm_presence",
                     "ip_address",
                     "last_seen",
                 ],
-                # Pre-populate initial capability values
                 "capabilitiesOptions": {},
                 "state": {
-                    "alarm_presence": dev.active,
-                    "ip_address":     ip_str,
-                    "last_seen":      dev.last_changed or "",
+                    "presence_status": "present" if dev.active else "away",
+                    "alarm_presence":  not dev.active,
+                    "ip_address":      ip_str,
+                    "last_seen":       dev.last_changed or "",
                 },
             })
 

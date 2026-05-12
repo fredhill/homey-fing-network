@@ -2,13 +2,17 @@
   "name": { "en": "Network Device" },
   "class": "sensor",
   "capabilities": [
+    "presence_status",
     "alarm_presence",
     "ip_address",
     "last_seen"
   ],
   "capabilitiesOptions": {
+    "presence_status": {
+      "title": { "en": "Status" }
+    },
     "alarm_presence": {
-      "title": { "en": "Presence" }
+      "title": { "en": "Away" }
     },
     "ip_address": {
       "title": { "en": "IP Address" }

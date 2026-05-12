@@ -7,7 +7,8 @@ State is driven entirely by FingboxDevice after each poll cycle:
   - This device reads its entry and updates its Homey capabilities
 
 Capabilities:
-  alarm_presence   — true = online, false = offline
+  presence_status  — enum: "present" or "away" (human-readable text on card)
+  alarm_presence   — true = away (alarm), false = home (no alarm); drives visual indicator + flows
   ip_address       — current IP (updates on DHCP reassignment)
   last_seen        — ISO timestamp of last Fing state-change event
 """
@@ -73,14 +74,23 @@ class NetworkDeviceDevice(device.Device):
         """
         Sets the alarm_presence capability.
 
+        Homey flashes red when an alarm_* capability is True, so we use the
+        inverted convention that makes UX sense for presence:
+          alarm_presence = False  →  home / present  →  quiet (white)
+          alarm_presence = True   →  away / not present  →  red alert
+
+        This also makes flow cards read naturally:
+          "alarm_presence turned on"  =  "device left home"
+          "alarm_presence turned off" =  "device arrived home"
+
         NOTE: We deliberately do NOT call set_unavailable() when a device
         goes offline. set_unavailable() in Homey means 'the SDK cannot
         communicate with the device' (greys out the tile with a warning).
-        Being absent from the network is a normal, expected state
-        represented purely by alarm_presence = False.
+        Being absent from the network is a normal, expected state.
         """
         try:
-            await self.set_capability_value("alarm_presence", online)
+            await self.set_capability_value("presence_status", "present" if online else "away")
+            await self.set_capability_value("alarm_presence", not online)
             if online:
                 await self.set_available()
         except Exception as exc:
