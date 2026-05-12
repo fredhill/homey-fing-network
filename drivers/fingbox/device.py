@@ -34,8 +34,23 @@ class FingboxDevice(device.Device):
         # Read connection config from device store (populated during pairing)
         store = self.get_store()
         self._ip      = store.get("ip",      "")
-        self._port    = int(store.get("port",    49090))
         self._api_key = store.get("api_key", "")
+
+        # Guard against a corrupt/missing port value crashing device init
+        try:
+            self._port = int(store.get("port", 49090))
+        except (TypeError, ValueError):
+            self._port = 49090
+
+        # Security: the API key was also written to app settings during pairing
+        # so the user could type it into the pairing form.  Now that it lives
+        # in the encrypted device store we no longer need it in plain-text
+        # settings — clear it so it isn't sitting around unnecessarily.
+        try:
+            if self.homey.settings.get("fingbox_api_key"):
+                self.homey.settings.set("fingbox_api_key", "")
+        except Exception:
+            pass  # Best-effort; non-fatal if settings manager isn't ready yet
 
         # Runtime state
         self._poll_task: asyncio.Task | None = None
@@ -74,8 +89,11 @@ class FingboxDevice(device.Device):
     async def on_settings(self, old_settings: dict, new_settings: dict, changed_keys: list):
         """Rebuild FingAgent if IP or port changes in device settings."""
         if "ip" in changed_keys or "port" in changed_keys:
-            self._ip   = new_settings.get("ip",   self._ip)
-            self._port = int(new_settings.get("port", self._port))
+            self._ip = new_settings.get("ip", self._ip)
+            try:
+                self._port = int(new_settings.get("port", self._port))
+            except (TypeError, ValueError):
+                self._port = 49090
             self._agent = FingAgent(self._ip, self._port, self._api_key)
             self.log(f"Connection updated — {self._ip}:{self._port}")
 
