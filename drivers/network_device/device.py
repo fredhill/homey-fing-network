@@ -17,6 +17,38 @@ import asyncio
 from homey import device
 
 
+def _fmt_timestamp(raw: str) -> str:
+    """
+    Convert a Fing ISO timestamp to a clean "YYYY-MM-DD HH:MM" string.
+
+    Handles common formats:
+      "2026-05-12T21:06:32Z"    → "2026-05-12 21:06"
+      "2026-05-12T21:06:32"     → "2026-05-12 21:06"
+      "2026-05-12T21:06:32+00:00" → "2026-05-12 21:06"
+      "2026-05-12 21:06:32"     → "2026-05-12 21:06"
+    Falls back to the original string if parsing fails.
+    """
+    if not raw:
+        return raw
+    try:
+        # Normalise: strip timezone suffix, replace T separator
+        normalised = raw.strip()
+        # Remove trailing Z or offset (+HH:MM / -HH:MM)
+        for sep in ("Z", "+", "-"):
+            if sep in normalised[10:]:          # only after the date portion
+                normalised = normalised[:normalised.index(sep, 10)]
+        # Replace T separator with a space
+        normalised = normalised.replace("T", " ")
+        # Keep only up to HH:MM (drop seconds and sub-seconds)
+        parts = normalised.split(" ")
+        if len(parts) == 2:
+            time_part = parts[1][:5]            # "HH:MM"
+            return f"{parts[0]} {time_part}"
+    except Exception:
+        pass
+    return raw
+
+
 class NetworkDeviceDevice(device.Device):
 
     async def on_init(self):
@@ -61,7 +93,7 @@ class NetworkDeviceDevice(device.Device):
                 await self.set_capability_value("ip_address", entry["ip"])
 
             if entry.get("last_changed"):
-                await self.set_capability_value("last_seen", entry["last_changed"])
+                await self.set_capability_value("last_seen", _fmt_timestamp(entry["last_changed"]))
 
         except Exception as exc:
             self.log(f"refresh_from_state error for {self._mac}: {exc}")

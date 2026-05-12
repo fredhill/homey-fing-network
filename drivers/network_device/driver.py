@@ -11,6 +11,24 @@ Pairing:
 import httpx
 from homey import driver
 
+# Shared with device.py — duplicated here to keep drivers self-contained
+def _fmt_timestamp(raw: str) -> str:
+    """Convert Fing ISO timestamp to 'YYYY-MM-DD HH:MM'."""
+    if not raw:
+        return raw
+    try:
+        normalised = raw.strip()
+        for sep in ("Z", "+", "-"):
+            if sep in normalised[10:]:
+                normalised = normalised[:normalised.index(sep, 10)]
+        normalised = normalised.replace("T", " ")
+        parts = normalised.split(" ")
+        if len(parts) == 2:
+            return f"{parts[0]} {parts[1][:5]}"
+    except Exception:
+        pass
+    return raw
+
 
 class NetworkDeviceDriver(driver.Driver):
 
@@ -106,7 +124,7 @@ class NetworkDeviceDriver(driver.Driver):
                     "presence_status": "present" if dev.active else "away",
                     "alarm_presence":  not dev.active,
                     "ip_address":      ip_str,
-                    "last_seen":       dev.last_changed or "",
+                    "last_seen":       _fmt_timestamp(dev.last_changed or ""),
                 },
             })
 
