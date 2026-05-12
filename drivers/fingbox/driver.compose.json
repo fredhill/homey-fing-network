@@ -3,16 +3,15 @@
   "class": "other",
   "capabilities": [
     "alarm_connectivity",
-    "measure_generic.online_count"
+    "online_count"
   ],
   "capabilitiesOptions": {
     "alarm_connectivity": {
       "title": { "en": "Connected" }
     },
-    "measure_generic.online_count": {
+    "online_count": {
       "title": { "en": "Online Devices" },
-      "decimals": 0,
-      "units": ""
+      "decimals": 0
     }
   },
   "images": {

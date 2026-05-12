@@ -1,4 +1,5 @@
 {
+  "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
   "id": "com.fredhill.fing",
   "version": "1.0.0",
   "compatibility": ">=13.0.0",
@@ -22,7 +23,9 @@
       "security"
     ]
   },
-  "category": ["security"],
+  "category": [
+    "security"
+  ],
   "brandColor": "#00b0b0",
   "pythonDependencies": [
     "fing-agent-api>=1.0.3"
@@ -40,49 +43,87 @@
   "homepage": "https://github.com/fredhill/homey-fing-network",
   "support": "https://github.com/fredhill/homey-fing-network/issues",
   "source": "https://github.com/fredhill/homey-fing-network",
-  "capabilities": {
-    "alarm_connectivity": {
-      "type": "boolean",
-      "title": { "en": "Connected" },
-      "desc": { "en": "Whether the Fingbox is reachable on the local network." },
-      "getable": true,
-      "setable": false,
-      "uiComponent": "sensor"
-    },
-    "ip_address": {
-      "type": "string",
-      "title": { "en": "IP Address" },
-      "desc": { "en": "Current IP address of the network device." },
-      "getable": true,
-      "setable": false,
-      "uiComponent": "sensor"
-    },
-    "last_seen": {
-      "type": "string",
-      "title": { "en": "Last Seen" },
-      "desc": { "en": "Timestamp of the last time Fing detected a state change for this device." },
-      "getable": true,
-      "setable": false,
-      "uiComponent": "sensor"
-    }
+  "flow": {
+    "triggers": [
+      {
+        "id": "new_unknown_device",
+        "title": {
+          "en": "An unknown device appeared on the network"
+        },
+        "titleFormatted": {
+          "en": "An unknown device appeared on [[device]]'s network"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=fingbox"
+          },
+          {
+            "name": "device",
+            "type": "device",
+            "placeholder": {
+              "en": "Which Fingbox?"
+            },
+            "filter": "driver_id=fingbox"
+          }
+        ],
+        "tokens": [
+          {
+            "name": "device_name",
+            "type": "string",
+            "title": {
+              "en": "Device Name"
+            },
+            "example": {
+              "en": "iPhone"
+            }
+          },
+          {
+            "name": "mac_address",
+            "type": "string",
+            "title": {
+              "en": "MAC Address"
+            },
+            "example": {
+              "en": "AA:BB:CC:DD:EE:FF"
+            }
+          },
+          {
+            "name": "ip_address",
+            "type": "string",
+            "title": {
+              "en": "IP Address"
+            },
+            "example": {
+              "en": "10.0.0.100"
+            }
+          }
+        ]
+      }
+    ]
   },
   "drivers": [
     {
-      "id": "fingbox",
-      "name": { "en": "Fingbox" },
+      "name": {
+        "en": "Fingbox"
+      },
       "class": "other",
       "capabilities": [
         "alarm_connectivity",
-        "measure_generic.online_count"
+        "online_count"
       ],
       "capabilitiesOptions": {
         "alarm_connectivity": {
-          "title": { "en": "Connected" }
+          "title": {
+            "en": "Connected"
+          }
         },
-        "measure_generic.online_count": {
-          "title": { "en": "Online Devices" },
-          "decimals": 0,
-          "units": ""
+        "online_count": {
+          "title": {
+            "en": "Online Devices"
+          },
+          "decimals": 0
         }
       },
       "images": {
@@ -94,14 +135,22 @@
           "id": "start",
           "template": "start_pairing",
           "options": {
-            "title": { "en": "Connect your Fingbox" },
-            "body": { "en": "You will need the IP address, port (default 49090), and API key from the Fing app.\n\nTo find your API key: open the Fing app → Fingbox → Settings → Local API → Enable and copy the key.\n\nNote: Local API must be enabled in the Fing web app under Manage → Settings → Local API." }
+            "title": {
+              "en": "Connect your Fingbox"
+            },
+            "body": {
+              "en": "You will need the IP address, port (default 49090), and API key from the Fing app.\n\nTo find your API key: open the Fing app → Fingbox → Settings → Local API → Enable and copy the key.\n\nNote: Local API must be enabled in the Fing web app under Manage → Settings → Local API."
+            }
           },
-          "navigation": { "next": "credentials" }
+          "navigation": {
+            "next": "credentials"
+          }
         },
         {
           "id": "credentials",
-          "navigation": { "next": "add_devices" }
+          "navigation": {
+            "next": "add_devices"
+          }
         },
         {
           "id": "add_devices",
@@ -111,31 +160,43 @@
       "settings": [
         {
           "type": "group",
-          "label": { "en": "Connection" },
+          "label": {
+            "en": "Connection"
+          },
           "children": [
             {
               "id": "ip",
               "type": "text",
-              "label": { "en": "IP Address" },
+              "label": {
+                "en": "IP Address"
+              },
               "value": "",
-              "hint": { "en": "Local IP address of your Fingbox (e.g. 10.0.0.75)" }
+              "hint": {
+                "en": "Local IP address of your Fingbox (e.g. 10.0.0.75)"
+              }
             },
             {
               "id": "port",
               "type": "number",
-              "label": { "en": "Port" },
+              "label": {
+                "en": "Port"
+              },
               "value": 49090,
               "min": 1,
               "max": 65535,
-              "hint": { "en": "Fing Local API port (default: 49090)" }
+              "hint": {
+                "en": "Fing Local API port (default: 49090)"
+              }
             }
           ]
         }
-      ]
+      ],
+      "id": "fingbox"
     },
     {
-      "id": "network_device",
-      "name": { "en": "Network Device" },
+      "name": {
+        "en": "Network Device"
+      },
       "class": "sensor",
       "capabilities": [
         "alarm_presence",
@@ -144,13 +205,19 @@
       ],
       "capabilitiesOptions": {
         "alarm_presence": {
-          "title": { "en": "Presence" }
+          "title": {
+            "en": "Presence"
+          }
         },
         "ip_address": {
-          "title": { "en": "IP Address" }
+          "title": {
+            "en": "IP Address"
+          }
         },
         "last_seen": {
-          "title": { "en": "Last Seen" }
+          "title": {
+            "en": "Last Seen"
+          }
         }
       },
       "images": {
@@ -161,50 +228,67 @@
         {
           "id": "list_devices",
           "template": "list_devices",
-          "navigation": { "next": "add_devices" }
+          "navigation": {
+            "next": "add_devices"
+          }
         },
         {
           "id": "add_devices",
           "template": "add_devices"
         }
-      ]
+      ],
+      "id": "network_device"
     }
   ],
-  "flow": {
-    "triggers": [
-      {
-        "id": "new_unknown_device",
-        "title": { "en": "An unknown device appeared on the network" },
-        "titleFormatted": { "en": "An unknown device appeared on [[device]]'s network" },
-        "args": [
-          {
-            "name": "device",
-            "type": "device",
-            "placeholder": { "en": "Which Fingbox?" },
-            "filter": "driver_id=fingbox"
-          }
-        ],
-        "tokens": [
-          {
-            "name": "device_name",
-            "type": "string",
-            "title": { "en": "Device Name" },
-            "example": { "en": "iPhone" }
-          },
-          {
-            "name": "mac_address",
-            "type": "string",
-            "title": { "en": "MAC Address" },
-            "example": { "en": "AA:BB:CC:DD:EE:FF" }
-          },
-          {
-            "name": "ip_address",
-            "type": "string",
-            "title": { "en": "IP Address" },
-            "example": { "en": "10.0.0.100" }
-          }
-        ]
-      }
-    ]
+  "capabilities": {
+    "alarm_connectivity": {
+      "type": "boolean",
+      "title": {
+        "en": "Connected"
+      },
+      "desc": {
+        "en": "Whether the Fingbox is reachable on the local network."
+      },
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor"
+    },
+    "ip_address": {
+      "type": "string",
+      "title": {
+        "en": "IP Address"
+      },
+      "desc": {
+        "en": "Current IP address of the network device."
+      },
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor"
+    },
+    "last_seen": {
+      "type": "string",
+      "title": {
+        "en": "Last Seen"
+      },
+      "desc": {
+        "en": "Timestamp of the last time Fing detected a state change for this device."
+      },
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor"
+    },
+    "online_count": {
+      "type": "number",
+      "title": {
+        "en": "Online Devices"
+      },
+      "desc": {
+        "en": "Number of devices currently online on the network."
+      },
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "decimals": 0
+    }
   }
 }

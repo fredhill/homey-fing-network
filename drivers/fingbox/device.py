@@ -215,7 +215,7 @@ class FingboxDevice(Device):
 
         # ---- Update online count ----
         online_count = sum(1 for s in new_state.values() if s["online"])
-        await self.set_capability_value("measure_generic.online_count", online_count)
+        await self.set_capability_value("online_count", online_count)
 
         # ---- Update agent health info (best-effort; may fail on some configurations) ----
         asyncio.create_task(self._update_agent_info())
