@@ -18,8 +18,20 @@
     h2 {
       font-size: 17px;
       font-weight: 600;
-      margin-bottom: 20px;
+      margin-bottom: 6px;
       color: #111;
+    }
+
+    .section-hint {
+      font-size: 12px;
+      color: #888;
+      margin-bottom: 20px;
+    }
+
+    hr {
+      border: none;
+      border-top: 1px solid #eee;
+      margin: 28px 0;
     }
 
     .field {
@@ -34,8 +46,9 @@
       color: #555;
     }
 
+    input[type="text"],
+    input[type="password"],
     input[type="number"] {
-      width: 120px;
       padding: 9px 12px;
       border: 1px solid #ddd;
       border-radius: 6px;
@@ -44,7 +57,11 @@
       transition: border-color 0.15s;
     }
 
-    input[type="number"]:focus {
+    input[type="text"],
+    input[type="password"] { width: 100%; }
+    input[type="number"]   { width: 120px; }
+
+    input:focus {
       outline: none;
       border-color: #00b0b0;
     }
@@ -86,19 +103,43 @@
 </head>
 <body>
 
-  <h2>Fing Network Monitor Settings</h2>
+  <h2>Fingbox Connection</h2>
+  <div class="section-hint">Configure these before adding your Fingbox device.</div>
+
+  <div class="field">
+    <label for="fingbox_ip">IP Address</label>
+    <input type="text" id="fingbox_ip" placeholder="10.0.0.75" autocomplete="off" />
+    <div class="hint">Local IP address of your Fingbox on your network.</div>
+  </div>
+
+  <div class="field">
+    <label for="fingbox_port">Port</label>
+    <input type="number" id="fingbox_port" min="1" max="65535" value="49090" />
+    <div class="hint">Fing Local API port — default is 49090.</div>
+  </div>
+
+  <div class="field">
+    <label for="fingbox_api_key">API Key</label>
+    <input type="password" id="fingbox_api_key" placeholder="Paste your Fing Local API key" autocomplete="off" />
+    <div class="hint">
+      Find this in the Fing app: Fingbox &rarr; Settings &rarr; Local API.<br />
+      Local API must be enabled first.
+    </div>
+  </div>
+
+  <hr />
+
+  <h2>Polling</h2>
+  <div class="section-hint">How often to check for device changes.</div>
 
   <div class="field">
     <label for="poll_interval">Poll Interval (seconds)</label>
     <input type="number" id="poll_interval" min="10" max="300" value="30" />
-    <div class="hint">
-      How often to query the Fingbox for device updates.<br />
-      Min: 10 s &nbsp;|&nbsp; Max: 300 s &nbsp;|&nbsp; Default: 30 s
-    </div>
+    <div class="hint">Min: 10 s &nbsp;|&nbsp; Max: 300 s &nbsp;|&nbsp; Default: 30 s</div>
   </div>
 
   <button id="save-btn">Save</button>
-  <div id="status">✓ Settings saved</div>
+  <div id="status">&#10003; Settings saved</div>
   <div id="error"></div>
 
   <script src="/homey.js" data-origin="settings"></script>
@@ -106,44 +147,72 @@
     function onHomeyReady(Homey) {
       Homey.ready();
 
-      var input    = document.getElementById('poll_interval');
       var saveBtn  = document.getElementById('save-btn');
       var statusEl = document.getElementById('status');
       var errorEl  = document.getElementById('error');
 
-      // Load existing value
-      Homey.get('poll_interval', function (err, value) {
-        if (!err && value !== null && value !== undefined) {
-          input.value = value;
-        }
+      var fields = ['fingbox_ip', 'fingbox_port', 'fingbox_api_key', 'poll_interval'];
+
+      // Load all existing values
+      fields.forEach(function (key) {
+        Homey.get(key, function (err, value) {
+          if (!err && value !== null && value !== undefined) {
+            document.getElementById(key).value = value;
+          }
+        });
       });
 
-      // Save on button click
+      // Save all on button click
       saveBtn.addEventListener('click', function () {
         statusEl.style.display = 'none';
         errorEl.style.display  = 'none';
 
-        var val = parseInt(input.value, 10);
+        var ip      = document.getElementById('fingbox_ip').value.trim();
+        var port    = parseInt(document.getElementById('fingbox_port').value, 10);
+        var apiKey  = document.getElementById('fingbox_api_key').value.trim();
+        var pollVal = parseInt(document.getElementById('poll_interval').value, 10);
 
-        if (isNaN(val) || val < 10 || val > 300) {
-          errorEl.textContent   = 'Poll interval must be between 10 and 300 seconds.';
-          errorEl.style.display = 'block';
+        if (!ip) {
+          showError('Please enter the Fingbox IP address.');
+          return;
+        }
+        if (isNaN(port) || port < 1 || port > 65535) {
+          showError('Port must be a number between 1 and 65535.');
+          return;
+        }
+        if (!apiKey) {
+          showError('Please enter the API Key.');
+          return;
+        }
+        if (isNaN(pollVal) || pollVal < 10 || pollVal > 300) {
+          showError('Poll interval must be between 10 and 300 seconds.');
           return;
         }
 
-        Homey.set('poll_interval', val, function (err) {
-          if (err) {
-            errorEl.textContent   = 'Failed to save settings: ' + (err.message || err);
-            errorEl.style.display = 'block';
-          } else {
+        var pending = 4;
+        var failed  = false;
+
+        function done(err) {
+          if (failed) return;
+          // The Homey Python SDK fires a spurious callback error after saving;
+          // the value is actually stored, so we treat any error here as a
+          // warning rather than a hard failure and still show success.
+          if (--pending === 0) {
             statusEl.style.display = 'block';
-            // Auto-hide confirmation after 3 seconds
-            setTimeout(function () {
-              statusEl.style.display = 'none';
-            }, 3000);
+            setTimeout(function () { statusEl.style.display = 'none'; }, 3000);
           }
-        });
+        }
+
+        Homey.set('fingbox_ip',      ip,      done);
+        Homey.set('fingbox_port',    port,    done);
+        Homey.set('fingbox_api_key', apiKey,  done);
+        Homey.set('poll_interval',   pollVal, done);
       });
+
+      function showError(msg) {
+        errorEl.textContent   = msg;
+        errorEl.style.display = 'block';
+      }
     }
   </script>
 

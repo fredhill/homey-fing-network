@@ -93,12 +93,12 @@ class FingboxDevice(device.Device):
     async def _initial_check(self):
         try:
             await self._agent.get_agent_info()
-            await self.set_capability_value("alarm_connectivity", True)
+            await self.set_capability_value("alarm_connectivity", False)  # False = no problem
             await self.set_available()
             self.log("Fingbox reachable — initial check passed")
         except Exception as exc:
             self.log(f"Initial check failed: {exc}")
-            await self.set_capability_value("alarm_connectivity", False)
+            await self.set_capability_value("alarm_connectivity", True)   # True = connection lost
             await self.set_unavailable("Fingbox is unreachable")
 
     # ------------------------------------------------------------------
@@ -165,8 +165,8 @@ class FingboxDevice(device.Device):
             await self._on_connectivity_lost()
             return
 
-        # ---- Mark connected ----
-        await self.set_capability_value("alarm_connectivity", True)
+        # ---- Mark connected (False = no alarm = all good) ----
+        await self.set_capability_value("alarm_connectivity", False)
         await self.set_available()
 
         # ---- Handle empty response ----
@@ -225,7 +225,7 @@ class FingboxDevice(device.Device):
 
     async def _on_connectivity_lost(self):
         """Called when any poll attempt fails."""
-        await self.set_capability_value("alarm_connectivity", False)
+        await self.set_capability_value("alarm_connectivity", True)   # True = connection lost
         await self.set_unavailable("Fingbox is unreachable")
 
     # ------------------------------------------------------------------
@@ -239,8 +239,8 @@ class FingboxDevice(device.Device):
         """
         try:
             await self._agent.get_agent_info()
-            # If we get here, the agent is reachable
-            await self.set_capability_value("alarm_connectivity", True)
+            # If we get here, the agent is reachable — no alarm
+            await self.set_capability_value("alarm_connectivity", False)
         except Exception:
             pass  # Already reflected in alarm_connectivity from _poll
 

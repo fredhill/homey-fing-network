@@ -116,7 +116,7 @@
       "capabilitiesOptions": {
         "alarm_connectivity": {
           "title": {
-            "en": "Connected"
+            "en": "Connection Lost"
           }
         },
         "online_count": {
@@ -132,22 +132,8 @@
       },
       "pair": [
         {
-          "id": "start",
-          "template": "start_pairing",
-          "options": {
-            "title": {
-              "en": "Connect your Fingbox"
-            },
-            "body": {
-              "en": "You will need the IP address, port (default 49090), and API key from the Fing app.\n\nTo find your API key: open the Fing app → Fingbox → Settings → Local API → Enable and copy the key.\n\nNote: Local API must be enabled in the Fing web app under Manage → Settings → Local API."
-            }
-          },
-          "navigation": {
-            "next": "credentials"
-          }
-        },
-        {
-          "id": "credentials",
+          "id": "list_devices",
+          "template": "list_devices",
           "navigation": {
             "next": "add_devices"
           }
@@ -244,10 +230,10 @@
     "alarm_connectivity": {
       "type": "boolean",
       "title": {
-        "en": "Connected"
+        "en": "Connection Lost"
       },
       "desc": {
-        "en": "Whether the Fingbox is reachable on the local network."
+        "en": "True when the Fingbox is unreachable on the local network."
       },
       "getable": true,
       "setable": false,

@@ -26,5 +26,14 @@ class FingNetworkMonitorApp(app.App):
 
         self.log("Fing Network Monitor started")
 
+    async def on_settings_set(self, *args, **kwargs):
+        """
+        Called by the Python SDK when a setting is saved from the settings
+        page (Homey.set()).  The base-class method has a signature bug so we
+        override it here with *args/**kwargs to accept whatever arguments the
+        SDK passes without crashing.
+        """
+        pass
+
 
 homey_export = FingNetworkMonitorApp

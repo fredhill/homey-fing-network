@@ -1,10 +1,10 @@
 {
   "type": "boolean",
   "title": {
-    "en": "Connected"
+    "en": "Connection Lost"
   },
   "desc": {
-    "en": "Whether the Fingbox is reachable on the local network."
+    "en": "True when the Fingbox is unreachable on the local network."
   },
   "getable": true,
   "setable": false,
