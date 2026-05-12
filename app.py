@@ -11,10 +11,10 @@ Shared state:
     Read by NetworkDeviceDevice.refresh_from_state().
 """
 
-from homey import App
+from homey import app
 
 
-class FingNetworkMonitorApp(App):
+class FingNetworkMonitorApp(app.App):
 
     async def on_init(self):
         await super().on_init()

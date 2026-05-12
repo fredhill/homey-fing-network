@@ -14,7 +14,7 @@ Responsibilities:
 import asyncio
 import httpx
 from fing_agent_api import FingAgent
-from homey import Device
+from homey import device
 
 # Seconds between polls (read from app settings each cycle, with this fallback)
 DEFAULT_POLL_INTERVAL = 30
@@ -26,7 +26,7 @@ MAX_POLL_INTERVAL     = 300
 CONSECUTIVE_EMPTY_THRESHOLD = 2
 
 
-class FingboxDevice(Device):
+class FingboxDevice(device.Device):
 
     async def on_init(self):
         await super().on_init()

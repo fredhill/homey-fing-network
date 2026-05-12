@@ -13,10 +13,10 @@ Capabilities:
 """
 
 import asyncio
-from homey import Device
+from homey import device
 
 
-class NetworkDeviceDevice(Device):
+class NetworkDeviceDevice(device.Device):
 
     async def on_init(self):
         await super().on_init()

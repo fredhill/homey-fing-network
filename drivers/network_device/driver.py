@@ -9,10 +9,10 @@ Pairing:
 """
 
 import httpx
-from homey import Driver
+from homey import driver
 
 
-class NetworkDeviceDriver(Driver):
+class NetworkDeviceDriver(driver.Driver):
 
     async def on_init(self):
         await super().on_init()

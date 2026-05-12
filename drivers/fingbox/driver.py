@@ -13,10 +13,10 @@ return the device via on_pair_list_devices so add_devices can show it.
 
 import httpx
 from fing_agent_api import FingAgent
-from homey import Driver
+from homey import driver
 
 
-class FingboxDriver(Driver):
+class FingboxDriver(driver.Driver):
 
     async def on_init(self):
         await super().on_init()
