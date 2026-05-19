@@ -1,10 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round">
   <!-- Clock face -->
   <circle cx="12" cy="12" r="9"/>
-  <!-- Hour hand pointing to ~10 -->
-  <line x1="12" y1="12" x2="8.5" y2="7.5"/>
-  <!-- Minute hand pointing to ~12 -->
-  <line x1="12" y1="12" x2="12" y2="5"/>
-  <!-- Center dot -->
+  <!-- Hour hand pointing to 4 (clock position 4 = 120° clockwise from 12) -->
+  <line x1="12" y1="12" x2="15.5" y2="14"/>
+  <!-- Minute hand pointing to 12 (straight up) -->
+  <line x1="12" y1="12" x2="12" y2="5.5"/>
+  <!-- Centre pivot -->
   <circle cx="12" cy="12" r="1" fill="currentColor" stroke="none"/>
 </svg>
