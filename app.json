@@ -243,7 +243,8 @@
       },
       "getable": true,
       "setable": false,
-      "uiComponent": "sensor"
+      "uiComponent": "sensor",
+      "icon": "/assets/capabilities/connectivity.svg"
     },
     "ip_address": {
       "type": "string",
@@ -255,7 +256,8 @@
       },
       "getable": true,
       "setable": false,
-      "uiComponent": "sensor"
+      "uiComponent": "sensor",
+      "icon": "/assets/capabilities/connectivity.svg"
     },
     "last_seen": {
       "type": "string",
@@ -267,7 +269,8 @@
       },
       "getable": true,
       "setable": false,
-      "uiComponent": "sensor"
+      "uiComponent": "sensor",
+      "icon": "/assets/capabilities/last_seen.svg"
     },
     "online_count": {
       "type": "number",
@@ -280,7 +283,8 @@
       "getable": true,
       "setable": false,
       "uiComponent": "sensor",
-      "decimals": 0
+      "decimals": 0,
+      "icon": "/assets/capabilities/online_count.svg"
     },
     "presence_status": {
       "type": "enum",
@@ -306,7 +310,8 @@
       ],
       "getable": true,
       "setable": false,
-      "uiComponent": "sensor"
+      "uiComponent": "sensor",
+      "icon": "/assets/capabilities/house_present.svg"
     }
   }
 }
