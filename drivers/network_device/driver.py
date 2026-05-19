@@ -71,7 +71,12 @@ class NetworkDeviceDriver(driver.Driver):
                 "Please check connectivity and try again."
             )
         except Exception as exc:
-            raise Exception(f"Failed to fetch device list from Fingbox: {exc}")
+            # Log full detail locally; show a generic message to the UI so
+            # internal library / network details aren't exposed.
+            self.log(f"Pairing: failed to fetch device list from Fingbox: {exc!r}")
+            raise Exception(
+                "Failed to fetch device list from Fingbox. Please try again."
+            )
 
         if not fing_devices:
             raise Exception(

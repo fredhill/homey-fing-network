@@ -121,7 +121,7 @@
   <div class="field">
     <label for="fingbox_api_key">API Key</label>
     <input type="password" id="fingbox_api_key" placeholder="Paste your Fing Local API key" autocomplete="off" />
-    <div class="hint">
+    <div class="hint" id="api_key_status">
       Find this in the Fing app: Fingbox &rarr; Settings &rarr; Local API.<br />
       Local API must be enabled first.
     </div>
@@ -151,15 +151,33 @@
       var statusEl = document.getElementById('status');
       var errorEl  = document.getElementById('error');
 
-      var fields = ['fingbox_ip', 'fingbox_port', 'fingbox_api_key', 'poll_interval'];
+      // Security: we intentionally do NOT read fingbox_api_key back into the
+      // DOM. The key is write-only from this page — once it has been saved
+      // and pairing consumed it, the device-store copy is the source of truth
+      // and the settings copy is cleared. We only signal whether one is set.
+      var readbackFields = ['fingbox_ip', 'fingbox_port', 'poll_interval'];
 
-      // Load all existing values
-      fields.forEach(function (key) {
+      readbackFields.forEach(function (key) {
         Homey.get(key, function (err, value) {
           if (!err && value !== null && value !== undefined) {
             document.getElementById(key).value = value;
           }
         });
+      });
+
+      // For the API key: show "configured" hint if one is currently stored,
+      // but never expose its value. Note that after pairing the key is
+      // cleared from settings, so this hint will only show during the brief
+      // window between save-and-pair.
+      Homey.get('fingbox_api_key', function (err, value) {
+        if (!err && value) {
+          var hint = document.getElementById('api_key_status');
+          if (hint) {
+            hint.innerHTML = '&#10003; API key is set (hidden for security). ' +
+                             'Paste a new key here to replace it.';
+            hint.style.color = '#00b0b0';
+          }
+        }
       });
 
       // Save all on button click
@@ -169,7 +187,7 @@
 
         var ip      = document.getElementById('fingbox_ip').value.trim();
         var port    = parseInt(document.getElementById('fingbox_port').value, 10);
-        var apiKey  = document.getElementById('fingbox_api_key').value.trim();
+        var apiKey  = document.getElementById('fingbox_api_key').value;   // intentionally NOT trimmed/displayed
         var pollVal = parseInt(document.getElementById('poll_interval').value, 10);
 
         if (!ip) {
@@ -185,33 +203,43 @@
           showError('Port must be a number between 1 and 65535.');
           return;
         }
-        if (!apiKey) {
-          showError('Please enter the API Key.');
-          return;
-        }
         if (isNaN(pollVal) || pollVal < 10 || pollVal > 300) {
           showError('Poll interval must be between 10 and 300 seconds.');
           return;
         }
 
-        var pending = 4;
-        var failed  = false;
+        // API key field is write-only: an empty value means "keep whatever
+        // is already stored". We only write a new value if the user typed
+        // something. Reasonable upper bound to refuse pathologically large
+        // input.
+        var apiKeyTrimmed = apiKey.trim();
+        if (apiKeyTrimmed.length > 1024) {
+          showError('API key is too long.');
+          return;
+        }
+        var writeApiKey = apiKeyTrimmed.length > 0;
+
+        var pending = writeApiKey ? 4 : 3;
 
         function done(err) {
-          if (failed) return;
           // The Homey Python SDK fires a spurious callback error after saving;
           // the value is actually stored, so we treat any error here as a
           // warning rather than a hard failure and still show success.
           if (--pending === 0) {
+            // Clear the password field after a successful save so the typed
+            // key doesn't linger in the DOM.
+            document.getElementById('fingbox_api_key').value = '';
             statusEl.style.display = 'block';
             setTimeout(function () { statusEl.style.display = 'none'; }, 3000);
           }
         }
 
-        Homey.set('fingbox_ip',      ip,      done);
-        Homey.set('fingbox_port',    port,    done);
-        Homey.set('fingbox_api_key', apiKey,  done);
-        Homey.set('poll_interval',   pollVal, done);
+        Homey.set('fingbox_ip',    ip,      done);
+        Homey.set('fingbox_port',  port,    done);
+        Homey.set('poll_interval', pollVal, done);
+        if (writeApiKey) {
+          Homey.set('fingbox_api_key', apiKeyTrimmed, done);
+        }
       });
 
       function showError(msg) {

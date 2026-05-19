@@ -25,6 +25,10 @@ MAX_POLL_INTERVAL     = 300
 # and mark all network devices offline (guards against momentary API blips)
 CONSECUTIVE_EMPTY_THRESHOLD = 2
 
+# Defensive caps for untrusted Fing API data
+MAX_NAME_LENGTH       = 200    # device names are passed into flow tokens / logs
+MAX_SEEN_MACS         = 500    # bound the in-memory dedup set
+
 
 class FingboxDevice(device.Device):
 
@@ -204,11 +208,27 @@ class FingboxDevice(device.Device):
         paired_macs = self._get_paired_network_device_macs()
         new_state: dict[str, dict] = {}
 
+        # Defensive: cap dedup set so a flood of one-off MACs (rogue AP,
+        # randomised-MAC privacy clients, etc.) can't grow it without bound.
+        if len(self._session_seen_macs) > MAX_SEEN_MACS:
+            self.log(
+                f"Pruning session_seen_macs (was {len(self._session_seen_macs)} entries)"
+            )
+            # Drop everything that isn't in the current device list — that
+            # gives us a fresh window without losing entries for devices
+            # actually present.
+            current_macs = {d.mac.upper() for d in devices if getattr(d, "mac", None)}
+            self._session_seen_macs &= current_macs
+
         for dev in devices:
-            mac      = dev.mac.upper()           # normalise to uppercase
+            mac      = (dev.mac or "").upper()           # normalise to uppercase
+            if not mac:
+                continue                                  # skip malformed entries
             ip_list  = dev.ip or []
             ip_str   = ip_list[0] if ip_list else ""
-            name     = dev.name or "Unknown"
+            # Bound untrusted device name length before it flows into logs,
+            # flow tokens, or capability values.
+            name     = (dev.name or "Unknown")[:MAX_NAME_LENGTH]
 
             new_state[mac] = {
                 "online":        dev.active,

@@ -76,12 +76,30 @@ class FingboxDriver(driver.Driver):
                 f"Fingbox returned an unexpected error (HTTP {exc.response.status_code})."
             )
         except Exception as exc:
-            raise Exception(f"Unexpected error connecting to Fingbox: {exc}")
+            # Log the full exception detail locally, show a generic message to
+            # the user so we don't leak library internals or stack hints.
+            self.log(f"Pairing: unexpected error connecting to Fingbox: {exc!r}")
+            raise Exception(
+                "Could not connect to Fingbox. "
+                "Check the IP, port, and API key, then try again."
+            )
 
         friendly_name = getattr(info, "friendly_name", None) or "Fingbox"
         device_id = f"fingbox-{ip.replace('.', '-')}"
 
         self.log(f"Pairing: Fingbox verified — {friendly_name} ({ip}:{port})")
+
+        # Security: now that we've validated the credentials and they will be
+        # persisted into the encrypted device store, clear the plain-text copy
+        # from app settings immediately. Don't wait for the device's on_init —
+        # the user may abandon pairing, and the key shouldn't linger.
+        try:
+            if self.homey.settings.get("fingbox_api_key"):
+                self.homey.settings.set("fingbox_api_key", "")
+                self.log("Pairing: cleared API key from plain-text app settings")
+        except Exception as exc:
+            # Non-fatal; the device's on_init will retry the clear
+            self.log(f"Pairing: could not clear API key from settings: {exc!r}")
 
         return [
             {
