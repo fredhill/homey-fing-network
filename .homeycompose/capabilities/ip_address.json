@@ -9,5 +9,5 @@
   "getable": true,
   "setable": false,
   "uiComponent": "sensor",
-  "icon": "/assets/capabilities/ip_address.svg"
+  "icon": "/assets/capabilities/connectivity.svg"
 }

@@ -7,8 +7,8 @@
     "en": "Whether the device is currently present on the network."
   },
   "values": [
-    { "id": "present", "title": { "en": "Present" } },
-    { "id": "away",    "title": { "en": "Away"    } }
+    { "id": "present", "title": { "en": "Present" }, "icon": "/assets/capabilities/house_present.svg" },
+    { "id": "away",    "title": { "en": "Away"    }, "icon": "/assets/capabilities/house_away.svg"    }
   ],
   "getable": true,
   "setable": false,
