@@ -1,18 +1,20 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
-  <!-- Hub and spoke: centre node + 4 outer nodes -->
-  <!-- Spokes -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Spokes from the centre hub to each outer node — drawn FIRST so nodes sit on top -->
   <line x1="12" y1="12" x2="12" y2="3"/>
-  <line x1="12" y1="12" x2="20" y2="17"/>
-  <line x1="12" y1="12" x2="4"  y2="17"/>
-  <line x1="12" y1="12" x2="19" y2="6"/>
-  <line x1="12" y1="12" x2="5"  y2="6"/>
-  <!-- Outer nodes -->
-  <circle cx="12" cy="3"  r="2" fill="currentColor" stroke="none"/>
-  <circle cx="20" cy="17" r="2" fill="currentColor" stroke="none"/>
-  <circle cx="4"  cy="17" r="2" fill="currentColor" stroke="none"/>
-  <circle cx="19" cy="6"  r="1.5" fill="currentColor" stroke="none"/>
-  <circle cx="5"  cy="6"  r="1.5" fill="currentColor" stroke="none"/>
-  <!-- Centre hub (ring + core) -->
-  <circle cx="12" cy="12" r="3.5" fill="currentColor" fill-opacity="0.15" stroke="currentColor" stroke-width="1.75"/>
-  <circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/>
+  <line x1="12" y1="12" x2="20" y2="18"/>
+  <line x1="12" y1="12" x2="4"  y2="18"/>
+  <line x1="12" y1="12" x2="3"  y2="8"/>
+  <line x1="12" y1="12" x2="21" y2="8"/>
+
+  <!-- Outer nodes (filled discs) -->
+  <circle cx="12" cy="3"  r="2.2" fill="currentColor" stroke="none"/>
+  <circle cx="20" cy="18" r="2.2" fill="currentColor" stroke="none"/>
+  <circle cx="4"  cy="18" r="2.2" fill="currentColor" stroke="none"/>
+  <circle cx="3"  cy="8"  r="2.0" fill="currentColor" stroke="none"/>
+  <circle cx="21" cy="8"  r="2.0" fill="currentColor" stroke="none"/>
+
+  <!-- Centre hub: outer ring + solid core -->
+  <circle cx="12" cy="12" r="3.5" fill="currentColor" fill-opacity="0.18"/>
+  <circle cx="12" cy="12" r="3.5"/>
+  <circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"/>
 </svg>

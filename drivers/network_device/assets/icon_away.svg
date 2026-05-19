@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Device tile icon: outline house with open door = device AWAY -->
+  <!-- Teal background circle -->
+  <circle cx="50" cy="50" r="50" fill="#00b0b0"/>
+
+  <!-- House drawn in white strokes (no fill) -->
+  <g fill="none" stroke="#ffffff" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Roof -->
+    <polyline points="15,48 50,18 85,48"/>
+    <!-- Left wall -->
+    <line x1="22" y1="48" x2="22" y2="82"/>
+    <!-- Right wall -->
+    <line x1="78" y1="48" x2="78" y2="82"/>
+    <!-- Bottom wall — left of doorway -->
+    <line x1="22" y1="82" x2="42" y2="82"/>
+    <!-- Bottom wall — right of doorway -->
+    <line x1="58" y1="82" x2="78" y2="82"/>
+    <!-- Doorway frame (hinge on left + lintel; right side missing = open) -->
+    <line x1="42" y1="82" x2="42" y2="60"/>
+    <line x1="42" y1="60" x2="58" y2="60"/>
+    <!-- Door panel shown standing ajar from the hinge -->
+    <line x1="42" y1="60" x2="58" y2="68"/>
+  </g>
+</svg>
