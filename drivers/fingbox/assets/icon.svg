@@ -1,41 +1,21 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <!--
-    Fingbox driver icon — uses only <circle> and <path> because Homey's
-    driver-icon renderer doesn't handle <rect>/<ellipse> reliably (same
-    quirk that affected capability icons earlier).
+  <!-- Fingbox device icon: rounded device shape with LED status dots
+       and a wifi indicator. (Originally had antennas above the box;
+       removed for a cleaner, more Fingbox-like silhouette.) -->
 
-    Geometry: white hockey-puck cylinder with blue silicone sleeve on
-    the bottom half, viewed from a slight overhead angle.
-  -->
+  <!-- Device body (rounded rect, centred vertically in the icon area) -->
+  <rect x="10" y="30" width="80" height="45" rx="8" ry="8" fill="#00b0b0"/>
 
-  <!-- App teal brand background -->
-  <circle cx="50" cy="50" r="50" fill="#00b0b0"/>
+  <!-- LED status dots along the front of the device -->
+  <circle cx="25" cy="52" r="4" fill="#fff" opacity="0.9"/>
+  <circle cx="38" cy="52" r="4" fill="#fff" opacity="0.6"/>
+  <circle cx="51" cy="52" r="4" fill="#fff" opacity="0.9"/>
 
-  <!-- Drop shadow below the puck (flat oval) -->
-  <path fill="#000000" fill-opacity="0.22"
-        d="M 24,72 A 26,2.5 0 0 0 76,72 A 26,2.5 0 0 0 24,72 Z"/>
-
-  <!-- Blue silicone region: lower side band + front-bottom curve.
-       Starts at top-left of band, traces right, down, under the bottom
-       arc, then closes back up. -->
-  <path fill="#285FF5"
-        d="M 20,52 L 80,52 L 80,64 A 30,6 0 0 1 20,64 Z"/>
-
-  <!-- White plastic region: top ellipse + upper side band as one shape.
-       The top arc curves up to y=32 (peak of top ellipse); the closing
-       sides drop down to y=52 (where the silicone begins). The bottom
-       half of the top ellipse is naturally inside the rect area. -->
-  <path fill="#ffffff"
-        d="M 20,38 A 30,6 0 0 1 80,38 L 80,52 L 20,52 Z"/>
-
-  <!-- Subtle shadow line where the top surface meets the side. Drawn as
-       a thin curved shape (lower half of the top ellipse, just inside
-       the body silhouette). Without this the puck reads as a flat
-       half-pill shape. -->
-  <path fill="#000000" fill-opacity="0.06"
-        d="M 21,38 A 29,5 0 0 0 79,38 L 79,40 A 29,5 0 0 1 21,40 Z"/>
-
-  <!-- Fing "O" mark in the centre of the top surface -->
-  <circle cx="50" cy="38" r="3.6" fill="#285FF5"/>
-  <circle cx="50" cy="38" r="1.4" fill="#ffffff"/>
+  <!-- Wifi-signal indicator on the right side -->
+  <path d="M63 47 Q75 38 75 52"
+        stroke="#fff" stroke-width="3" fill="none"
+        stroke-linecap="round" opacity="0.85"/>
+  <path d="M67 50 Q72 44 72 52"
+        stroke="#fff" stroke-width="2.5" fill="none"
+        stroke-linecap="round" opacity="0.85"/>
 </svg>
