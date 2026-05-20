@@ -1,17 +1,35 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <!-- Fingbox device icon: router/box shape with network indicator -->
-  <rect x="10" y="30" width="80" height="45" rx="8" ry="8" fill="#00b0b0"/>
-  <!-- LED dots -->
-  <circle cx="25" cy="52" r="4" fill="#fff" opacity="0.9"/>
-  <circle cx="38" cy="52" r="4" fill="#fff" opacity="0.6"/>
-  <circle cx="51" cy="52" r="4" fill="#fff" opacity="0.9"/>
-  <!-- Antenna left -->
-  <line x1="30" y1="30" x2="22" y2="14" stroke="#00b0b0" stroke-width="4" stroke-linecap="round"/>
-  <circle cx="22" cy="14" r="4" fill="#00b0b0"/>
-  <!-- Antenna right -->
-  <line x1="70" y1="30" x2="78" y2="14" stroke="#00b0b0" stroke-width="4" stroke-linecap="round"/>
-  <circle cx="78" cy="14" r="4" fill="#00b0b0"/>
-  <!-- Wifi arc -->
-  <path d="M63 47 Q75 38 75 52" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.85"/>
-  <path d="M67 50 Q72 44 72 52" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round" opacity="0.85"/>
+  <!--
+    Fingbox driver icon — stylised representation of the actual hardware:
+    a short white plastic puck with a blue silicone sleeve wrapping the
+    bottom half, viewed from a slight overhead angle so the white top
+    surface is visible.
+  -->
+
+  <!-- App teal brand background -->
+  <circle cx="50" cy="50" r="50" fill="#00b0b0"/>
+
+  <!-- Drop shadow below the puck -->
+  <ellipse cx="50" cy="72" rx="26" ry="2.5" fill="#000000" opacity="0.22"/>
+
+  <!-- Bottom blue ellipse — back-bottom of the silicone sleeve. The side
+       rect below covers the top half of this ellipse, leaving only the
+       front-bottom curve visible, which gives the puck its 3D feel. -->
+  <ellipse cx="50" cy="64" rx="30" ry="6" fill="#285FF5"/>
+
+  <!-- Blue silicone sleeve wrapping the lower side of the cylinder -->
+  <rect x="20" y="52" width="60" height="12" fill="#285FF5"/>
+
+  <!-- Subtle highlight on the blue silicone (catches the light at top) -->
+  <rect x="20" y="52" width="60" height="1.5" fill="#5b86ff"/>
+
+  <!-- White plastic body — upper side of the cylinder -->
+  <rect x="20" y="38" width="60" height="14" fill="#ffffff"/>
+
+  <!-- White top surface of the puck -->
+  <ellipse cx="50" cy="38" rx="30" ry="6" fill="#ffffff"/>
+
+  <!-- Fing "O" mark in the centre of the top -->
+  <circle cx="50" cy="38" r="3.6" fill="#285FF5"/>
+  <circle cx="50" cy="38" r="1.4" fill="#ffffff"/>
 </svg>
