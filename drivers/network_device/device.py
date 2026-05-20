@@ -131,49 +131,8 @@ class NetworkDeviceDevice(device.Device):
             await self.set_capability_value("alarm_presence", not online)
             if online:
                 await self.set_available()
-
-            # Dynamically swap the device-tile icon to reflect presence.
-            # Avoid hammering Homey with redundant icon swaps every poll —
-            # only push a change when the desired icon actually differs from
-            # the last one we set.
-            desired_icon = (
-                "/drivers/network_device/assets/icon_present.svg" if online
-                else "/drivers/network_device/assets/icon_away.svg"
-            )
-            if getattr(self, "_current_icon", None) != desired_icon:
-                await self._try_set_icon(desired_icon)
-                self._current_icon = desired_icon
-
         except Exception as exc:
             self.log(f"update_presence error for {self._mac}: {exc}")
-
-    async def _try_set_icon(self, url: str):
-        """
-        Switch the device tile icon at runtime. The Homey JS SDK exposes
-        device.setIconObj({url}); the Python SDK should expose the snake-
-        cased equivalent. Different SDK versions name it differently, so
-        try a few possibilities and fail silently if none are available.
-        """
-        candidates = (
-            ("set_icon_obj", {"url": url}),
-            ("set_icon",     {"url": url}),
-            ("setIconObj",   {"url": url}),
-        )
-        for method_name, payload in candidates:
-            method = getattr(self, method_name, None)
-            if callable(method):
-                try:
-                    result = method(payload)
-                    # method may be sync or async — await if it returned a coroutine
-                    if hasattr(result, "__await__"):
-                        await result
-                    return
-                except Exception as exc:
-                    self.log(f"{method_name}() failed: {exc}")
-        # No supported method on this SDK version — log once and move on
-        if not getattr(self, "_icon_swap_warned", False):
-            self.log("Dynamic icon swap not supported by this Homey SDK version")
-            self._icon_swap_warned = True
 
 
 homey_export = NetworkDeviceDevice
