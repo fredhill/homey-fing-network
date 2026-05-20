@@ -1,35 +1,41 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
   <!--
-    Fingbox driver icon — stylised representation of the actual hardware:
-    a short white plastic puck with a blue silicone sleeve wrapping the
-    bottom half, viewed from a slight overhead angle so the white top
-    surface is visible.
+    Fingbox driver icon — uses only <circle> and <path> because Homey's
+    driver-icon renderer doesn't handle <rect>/<ellipse> reliably (same
+    quirk that affected capability icons earlier).
+
+    Geometry: white hockey-puck cylinder with blue silicone sleeve on
+    the bottom half, viewed from a slight overhead angle.
   -->
 
   <!-- App teal brand background -->
   <circle cx="50" cy="50" r="50" fill="#00b0b0"/>
 
-  <!-- Drop shadow below the puck -->
-  <ellipse cx="50" cy="72" rx="26" ry="2.5" fill="#000000" opacity="0.22"/>
+  <!-- Drop shadow below the puck (flat oval) -->
+  <path fill="#000000" fill-opacity="0.22"
+        d="M 24,72 A 26,2.5 0 0 0 76,72 A 26,2.5 0 0 0 24,72 Z"/>
 
-  <!-- Bottom blue ellipse — back-bottom of the silicone sleeve. The side
-       rect below covers the top half of this ellipse, leaving only the
-       front-bottom curve visible, which gives the puck its 3D feel. -->
-  <ellipse cx="50" cy="64" rx="30" ry="6" fill="#285FF5"/>
+  <!-- Blue silicone region: lower side band + front-bottom curve.
+       Starts at top-left of band, traces right, down, under the bottom
+       arc, then closes back up. -->
+  <path fill="#285FF5"
+        d="M 20,52 L 80,52 L 80,64 A 30,6 0 0 1 20,64 Z"/>
 
-  <!-- Blue silicone sleeve wrapping the lower side of the cylinder -->
-  <rect x="20" y="52" width="60" height="12" fill="#285FF5"/>
+  <!-- White plastic region: top ellipse + upper side band as one shape.
+       The top arc curves up to y=32 (peak of top ellipse); the closing
+       sides drop down to y=52 (where the silicone begins). The bottom
+       half of the top ellipse is naturally inside the rect area. -->
+  <path fill="#ffffff"
+        d="M 20,38 A 30,6 0 0 1 80,38 L 80,52 L 20,52 Z"/>
 
-  <!-- Subtle highlight on the blue silicone (catches the light at top) -->
-  <rect x="20" y="52" width="60" height="1.5" fill="#5b86ff"/>
+  <!-- Subtle shadow line where the top surface meets the side. Drawn as
+       a thin curved shape (lower half of the top ellipse, just inside
+       the body silhouette). Without this the puck reads as a flat
+       half-pill shape. -->
+  <path fill="#000000" fill-opacity="0.06"
+        d="M 21,38 A 29,5 0 0 0 79,38 L 79,40 A 29,5 0 0 1 21,40 Z"/>
 
-  <!-- White plastic body — upper side of the cylinder -->
-  <rect x="20" y="38" width="60" height="14" fill="#ffffff"/>
-
-  <!-- White top surface of the puck -->
-  <ellipse cx="50" cy="38" rx="30" ry="6" fill="#ffffff"/>
-
-  <!-- Fing "O" mark in the centre of the top -->
+  <!-- Fing "O" mark in the centre of the top surface -->
   <circle cx="50" cy="38" r="3.6" fill="#285FF5"/>
   <circle cx="50" cy="38" r="1.4" fill="#ffffff"/>
 </svg>
