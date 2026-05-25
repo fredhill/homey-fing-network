@@ -65,6 +65,29 @@ appears.
 - IP Address — current IP (updates on DHCP reassignment)
 - Last Seen — timestamp of the most recent state change, in your local timezone
 
+## How quickly does presence update?
+
+**Arrival is fast.** When a device joins your WiFi it immediately broadcasts
+ARP / DHCP traffic, which the Fingbox sees right away. Expect Homey to flip
+the device to "Present" within ~30 seconds.
+
+**Departure is slower — usually 5 to 10 minutes.** WiFi has no "user left"
+notification, so the Fingbox has to *stop seeing* a device for a built-in
+grace period before deciding it's gone. This is a deliberate Fingbox
+behaviour (it prevents false "away" events when your phone briefly drops
+signal in your pocket or goes to sleep) — it isn't configurable through
+the Fing mobile app, and it isn't something this Homey app can speed up.
+
+For most automations (turning off lights when nobody is home, arming an
+alarm, etc.) this conservative delay is actually what you want. If you
+need *immediate* "left home" reactions, geofencing from a phone GPS is
+usually a better signal than network presence.
+
+You **can** speed up the polling side by dropping the "Poll Interval"
+setting from 30 s down to 10 s in the app settings — but that only
+shortens the gap between *Fingbox reports a state change* and *Homey
+sees it*, not the gap before the Fingbox itself decides someone is gone.
+
 ## Privacy & Security
 
 - The Fing API key is collected once in the settings page, then immediately
