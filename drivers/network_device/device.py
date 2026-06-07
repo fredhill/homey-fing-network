@@ -14,14 +14,68 @@ Capabilities:
 """
 
 import asyncio
+import os
 from datetime import datetime, timezone
+from zoneinfo import ZoneInfo
 from homey import device
 
 
-def _fmt_timestamp(raw: str) -> str:
+def _resolve_timezone(homey=None):
+    """
+    Best-effort timezone resolution, in order of reliability:
+
+      1. App setting "timezone"        — user-provided override (most authoritative)
+      2. Homey's configured timezone   — what the user already set on their Homey
+      3. TZ environment variable        — Docker-style override
+      4. None                           — caller falls back to dt.astimezone()
+                                          with system tz (often UTC in Docker)
+
+    Returns a ZoneInfo (tzinfo) or None.
+    """
+    # 1. App setting override
+    if homey is not None:
+        try:
+            tz_name = (homey.settings.get("timezone") or "").strip()
+            if tz_name:
+                return ZoneInfo(tz_name)
+        except Exception:
+            pass
+
+    # 2. Homey's own configured timezone (geolocation / clock manager)
+    if homey is not None:
+        for path in ("clock", "geolocation"):
+            mgr = getattr(homey, path, None)
+            if mgr is None:
+                continue
+            for method_name in ("get_timezone", "getTimezone"):
+                meth = getattr(mgr, method_name, None)
+                if callable(meth):
+                    try:
+                        tz_name = meth()
+                        # method may be sync or async
+                        if hasattr(tz_name, "__await__"):
+                            continue  # can't await from sync context; skip
+                        if tz_name:
+                            return ZoneInfo(str(tz_name).strip())
+                    except Exception:
+                        pass
+
+    # 3. TZ environment variable
+    tz_name = (os.environ.get("TZ") or "").strip()
+    if tz_name:
+        try:
+            return ZoneInfo(tz_name)
+        except Exception:
+            pass
+
+    # 4. No reliable source — return None, caller falls back to system tz
+    return None
+
+
+def _fmt_timestamp(raw: str, tz=None) -> str:
     """
     Convert a Fing UTC timestamp to a clean "YYYY-MM-DD HH:MM" string in the
-    system's local timezone (i.e. whatever timezone the Raspberry Pi is set to).
+    given timezone (or the system tz if no tz given).
 
     Fing always returns UTC timestamps, e.g.:
       "2026-05-12T21:06:32Z"      (Z suffix = UTC)
@@ -34,21 +88,12 @@ def _fmt_timestamp(raw: str) -> str:
         return raw
     try:
         normalised = raw.strip()
-
-        # datetime.fromisoformat() (Python 3.11+) understands +HH:MM offsets
-        # but NOT the trailing "Z" shorthand — replace it first.
         if normalised.endswith("Z"):
             normalised = normalised[:-1] + "+00:00"
-
         dt = datetime.fromisoformat(normalised)
-
-        # If the timestamp has no timezone info assume it is UTC
         if dt.tzinfo is None:
             dt = dt.replace(tzinfo=timezone.utc)
-
-        # Convert to the host system's local timezone (e.g. America/New_York)
-        dt_local = dt.astimezone()
-
+        dt_local = dt.astimezone(tz) if tz is not None else dt.astimezone()
         return dt_local.strftime("%Y-%m-%d %H:%M")
     except Exception:
         pass
@@ -63,7 +108,15 @@ class NetworkDeviceDevice(device.Device):
         store = self.get_store()
         self._mac: str = store.get("mac_address", "").upper()
 
-        self.log(f"NetworkDeviceDevice initialising — MAC: {self._mac}")
+        # Cache the resolved timezone on the device so we don't re-do the
+        # whole probe on every poll. Re-resolved on demand from refresh_*
+        # if the cached value is None (in case settings change at runtime).
+        self._tz = _resolve_timezone(self.homey)
+
+        self.log(
+            f"NetworkDeviceDevice initialising — MAC: {self._mac}, "
+            f"timezone: {self._tz or 'system'}"
+        )
 
         # Attempt to populate capabilities from whatever state is already available
         asyncio.create_task(self.refresh_from_state())
@@ -99,7 +152,13 @@ class NetworkDeviceDevice(device.Device):
                 await self.set_capability_value("ip_address", entry["ip"])
 
             if entry.get("last_changed"):
-                await self.set_capability_value("last_seen", _fmt_timestamp(entry["last_changed"]))
+                # Re-resolve tz on each poll if we don't have one cached
+                # (covers the case where the user just typed it into settings)
+                if self._tz is None:
+                    self._tz = _resolve_timezone(self.homey)
+                await self.set_capability_value(
+                    "last_seen", _fmt_timestamp(entry["last_changed"], tz=self._tz)
+                )
 
         except Exception as exc:
             self.log(f"refresh_from_state error for {self._mac}: {exc}")

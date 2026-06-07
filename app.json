@@ -28,7 +28,8 @@
   ],
   "brandColor": "#00b0b0",
   "pythonPackages": [
-    "fing-agent-api>=1.0.3"
+    "fing-agent-api>=1.0.3",
+    "tzdata>=2024.1"
   ],
   "permissions": [],
   "images": {

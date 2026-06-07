@@ -138,6 +138,26 @@
     <div class="hint">Min: 10 s &nbsp;|&nbsp; Max: 300 s &nbsp;|&nbsp; Default: 30 s</div>
   </div>
 
+  <hr />
+
+  <h2>Time Zone</h2>
+  <div class="section-hint">
+    Used to display the "Last Seen" timestamp in your local time. Leave
+    blank to auto-detect from your Homey's location.
+  </div>
+
+  <div class="field">
+    <label for="timezone">Time Zone</label>
+    <input type="text" id="timezone"
+           placeholder="America/Los_Angeles"
+           autocomplete="off" />
+    <div class="hint">
+      IANA name, e.g. <code>America/Los_Angeles</code>,
+      <code>America/New_York</code>, <code>Europe/London</code>.
+      Full list: <code>timedatectl list-timezones</code>.
+    </div>
+  </div>
+
   <button id="save-btn">Save</button>
   <div id="status">&#10003; Settings saved</div>
   <div id="error"></div>
@@ -155,7 +175,7 @@
       // DOM. The key is write-only from this page — once it has been saved
       // and pairing consumed it, the device-store copy is the source of truth
       // and the settings copy is cleared. We only signal whether one is set.
-      var readbackFields = ['fingbox_ip', 'fingbox_port', 'poll_interval'];
+      var readbackFields = ['fingbox_ip', 'fingbox_port', 'poll_interval', 'timezone'];
 
       readbackFields.forEach(function (key) {
         Homey.get(key, function (err, value) {
@@ -189,6 +209,7 @@
         var port    = parseInt(document.getElementById('fingbox_port').value, 10);
         var apiKey  = document.getElementById('fingbox_api_key').value;   // intentionally NOT trimmed/displayed
         var pollVal = parseInt(document.getElementById('poll_interval').value, 10);
+        var tzVal   = document.getElementById('timezone').value.trim();
 
         if (!ip) {
           showError('Please enter the Fingbox IP address.');
@@ -207,6 +228,12 @@
           showError('Poll interval must be between 10 and 300 seconds.');
           return;
         }
+        // Very loose timezone validation — accept "Region/City" or empty.
+        // The Python side will fail gracefully if the name isn't recognised.
+        if (tzVal && !/^[A-Za-z_+\-0-9]+(\/[A-Za-z_+\-0-9]+){0,2}$/.test(tzVal)) {
+          showError('Time zone must be an IANA name like America/Los_Angeles, or blank.');
+          return;
+        }
 
         // API key field is write-only: an empty value means "keep whatever
         // is already stored". We only write a new value if the user typed
@@ -219,7 +246,8 @@
         }
         var writeApiKey = apiKeyTrimmed.length > 0;
 
-        var pending = writeApiKey ? 4 : 3;
+        // base 4 saves: ip, port, poll, timezone (always written so user can blank it out)
+        var pending = writeApiKey ? 5 : 4;
 
         function done(err) {
           // The Homey Python SDK fires a spurious callback error after saving;
@@ -237,6 +265,7 @@
         Homey.set('fingbox_ip',    ip,      done);
         Homey.set('fingbox_port',  port,    done);
         Homey.set('poll_interval', pollVal, done);
+        Homey.set('timezone',      tzVal,   done);
         if (writeApiKey) {
           Homey.set('fingbox_api_key', apiKeyTrimmed, done);
         }

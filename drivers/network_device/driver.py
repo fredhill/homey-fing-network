@@ -9,13 +9,51 @@ Pairing:
 """
 
 import httpx
+import os
 from datetime import datetime, timezone
+from zoneinfo import ZoneInfo
 from homey import driver
 
 
-# Duplicated from device.py — keeps drivers self-contained
-def _fmt_timestamp(raw: str) -> str:
-    """Convert a Fing UTC timestamp to 'YYYY-MM-DD HH:MM' in local system time."""
+# Duplicated from device.py — Homey loads driver/device files as standalone
+# modules, so we can't relative-import. Keep these in sync if either side
+# changes.
+
+def _resolve_timezone(homey=None):
+    """See device.py for full docstring. Returns a ZoneInfo or None."""
+    if homey is not None:
+        try:
+            tz_name = (homey.settings.get("timezone") or "").strip()
+            if tz_name:
+                return ZoneInfo(tz_name)
+        except Exception:
+            pass
+        for path in ("clock", "geolocation"):
+            mgr = getattr(homey, path, None)
+            if mgr is None:
+                continue
+            for method_name in ("get_timezone", "getTimezone"):
+                meth = getattr(mgr, method_name, None)
+                if callable(meth):
+                    try:
+                        tz_name = meth()
+                        if hasattr(tz_name, "__await__"):
+                            continue
+                        if tz_name:
+                            return ZoneInfo(str(tz_name).strip())
+                    except Exception:
+                        pass
+    tz_name = (os.environ.get("TZ") or "").strip()
+    if tz_name:
+        try:
+            return ZoneInfo(tz_name)
+        except Exception:
+            pass
+    return None
+
+
+def _fmt_timestamp(raw: str, tz=None) -> str:
+    """Convert Fing UTC timestamp to 'YYYY-MM-DD HH:MM' in the given tz."""
     if not raw:
         return raw
     try:
@@ -25,7 +63,8 @@ def _fmt_timestamp(raw: str) -> str:
         dt = datetime.fromisoformat(normalised)
         if dt.tzinfo is None:
             dt = dt.replace(tzinfo=timezone.utc)
-        return dt.astimezone().strftime("%Y-%m-%d %H:%M")
+        dt_local = dt.astimezone(tz) if tz is not None else dt.astimezone()
+        return dt_local.strftime("%Y-%m-%d %H:%M")
     except Exception:
         pass
     return raw
@@ -130,7 +169,7 @@ class NetworkDeviceDriver(driver.Driver):
                     "presence_status": "present" if dev.active else "away",
                     "alarm_presence":  not dev.active,
                     "ip_address":      ip_str,
-                    "last_seen":       _fmt_timestamp(dev.last_changed or ""),
+                    "last_seen":       _fmt_timestamp(dev.last_changed or "", tz=_resolve_timezone(self.homey)),
                 },
             })
 
