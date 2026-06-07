@@ -48,20 +48,26 @@
 
     input[type="text"],
     input[type="password"],
-    input[type="number"] {
+    input[type="number"],
+    select {
       padding: 9px 12px;
       border: 1px solid #ddd;
       border-radius: 6px;
       font-size: 14px;
       color: #111;
       transition: border-color 0.15s;
+      background: #fff;
     }
 
     input[type="text"],
-    input[type="password"] { width: 100%; }
-    input[type="number"]   { width: 120px; }
+    input[type="password"],
+    select { width: 100%; }
+    input[type="number"] { width: 120px; }
 
-    input:focus {
+    select { appearance: menulist; }   /* keep native dropdown chrome */
+
+    input:focus,
+    select:focus {
       outline: none;
       border-color: #00b0b0;
     }
@@ -148,13 +154,156 @@
 
   <div class="field">
     <label for="timezone">Time Zone</label>
-    <input type="text" id="timezone"
-           placeholder="America/Los_Angeles"
-           autocomplete="off" />
+    <select id="timezone">
+      <option value="">— Auto-detect from Homey —</option>
+
+      <optgroup label="United States">
+        <option value="America/New_York">New York — Eastern (US)</option>
+        <option value="America/Detroit">Detroit — Eastern (US)</option>
+        <option value="America/Indiana/Indianapolis">Indianapolis — Eastern (US)</option>
+        <option value="America/Chicago">Chicago — Central (US)</option>
+        <option value="America/Denver">Denver — Mountain (US)</option>
+        <option value="America/Phoenix">Phoenix — Mountain, no DST (US)</option>
+        <option value="America/Los_Angeles">Los Angeles — Pacific (US)</option>
+        <option value="America/Anchorage">Anchorage — Alaska (US)</option>
+        <option value="America/Adak">Adak — Aleutian (US)</option>
+        <option value="Pacific/Honolulu">Honolulu — Hawaii (US)</option>
+      </optgroup>
+
+      <optgroup label="Canada">
+        <option value="America/St_Johns">St. John's — Newfoundland</option>
+        <option value="America/Halifax">Halifax — Atlantic</option>
+        <option value="America/Toronto">Toronto — Eastern</option>
+        <option value="America/Winnipeg">Winnipeg — Central</option>
+        <option value="America/Regina">Regina — Saskatchewan</option>
+        <option value="America/Edmonton">Edmonton — Mountain</option>
+        <option value="America/Vancouver">Vancouver — Pacific</option>
+      </optgroup>
+
+      <optgroup label="Mexico, Central America & Caribbean">
+        <option value="America/Mexico_City">Mexico City</option>
+        <option value="America/Tijuana">Tijuana</option>
+        <option value="America/Cancun">Cancún</option>
+        <option value="America/Guatemala">Guatemala City</option>
+        <option value="America/Costa_Rica">San José (CR)</option>
+        <option value="America/Panama">Panama City</option>
+        <option value="America/Havana">Havana</option>
+        <option value="America/Jamaica">Kingston (JM)</option>
+        <option value="America/Puerto_Rico">San Juan (PR)</option>
+        <option value="America/Santo_Domingo">Santo Domingo</option>
+      </optgroup>
+
+      <optgroup label="South America">
+        <option value="America/Bogota">Bogotá</option>
+        <option value="America/Caracas">Caracas</option>
+        <option value="America/Lima">Lima</option>
+        <option value="America/La_Paz">La Paz</option>
+        <option value="America/Santiago">Santiago</option>
+        <option value="America/Argentina/Buenos_Aires">Buenos Aires</option>
+        <option value="America/Sao_Paulo">São Paulo</option>
+        <option value="America/Montevideo">Montevideo</option>
+        <option value="America/Asuncion">Asunción</option>
+      </optgroup>
+
+      <optgroup label="United Kingdom & Ireland">
+        <option value="Europe/London">London (UK)</option>
+        <option value="Europe/Dublin">Dublin (Ireland)</option>
+      </optgroup>
+
+      <optgroup label="Europe">
+        <option value="Europe/Lisbon">Lisbon (Portugal)</option>
+        <option value="Europe/Madrid">Madrid (Spain)</option>
+        <option value="Europe/Paris">Paris (France)</option>
+        <option value="Europe/Brussels">Brussels (Belgium)</option>
+        <option value="Europe/Amsterdam">Amsterdam (Netherlands)</option>
+        <option value="Europe/Luxembourg">Luxembourg</option>
+        <option value="Europe/Berlin">Berlin (Germany)</option>
+        <option value="Europe/Vienna">Vienna (Austria)</option>
+        <option value="Europe/Zurich">Zürich (Switzerland)</option>
+        <option value="Europe/Rome">Rome (Italy)</option>
+        <option value="Europe/Copenhagen">Copenhagen (Denmark)</option>
+        <option value="Europe/Oslo">Oslo (Norway)</option>
+        <option value="Europe/Stockholm">Stockholm (Sweden)</option>
+        <option value="Europe/Helsinki">Helsinki (Finland)</option>
+        <option value="Europe/Reykjavik">Reykjavík (Iceland)</option>
+        <option value="Europe/Warsaw">Warsaw (Poland)</option>
+        <option value="Europe/Prague">Prague (Czechia)</option>
+        <option value="Europe/Budapest">Budapest (Hungary)</option>
+        <option value="Europe/Bucharest">Bucharest (Romania)</option>
+        <option value="Europe/Sofia">Sofia (Bulgaria)</option>
+        <option value="Europe/Athens">Athens (Greece)</option>
+        <option value="Europe/Istanbul">Istanbul (Türkiye)</option>
+        <option value="Europe/Kyiv">Kyiv (Ukraine)</option>
+        <option value="Europe/Moscow">Moscow (Russia)</option>
+      </optgroup>
+
+      <optgroup label="Africa">
+        <option value="Africa/Casablanca">Casablanca</option>
+        <option value="Africa/Algiers">Algiers</option>
+        <option value="Africa/Tunis">Tunis</option>
+        <option value="Africa/Cairo">Cairo</option>
+        <option value="Africa/Lagos">Lagos</option>
+        <option value="Africa/Nairobi">Nairobi</option>
+        <option value="Africa/Addis_Ababa">Addis Ababa</option>
+        <option value="Africa/Johannesburg">Johannesburg</option>
+      </optgroup>
+
+      <optgroup label="Middle East">
+        <option value="Asia/Jerusalem">Jerusalem</option>
+        <option value="Asia/Baghdad">Baghdad</option>
+        <option value="Asia/Riyadh">Riyadh</option>
+        <option value="Asia/Tehran">Tehran</option>
+        <option value="Asia/Dubai">Dubai</option>
+        <option value="Asia/Qatar">Doha</option>
+      </optgroup>
+
+      <optgroup label="Asia">
+        <option value="Asia/Karachi">Karachi</option>
+        <option value="Asia/Kolkata">Mumbai / Kolkata (India)</option>
+        <option value="Asia/Colombo">Colombo</option>
+        <option value="Asia/Kathmandu">Kathmandu</option>
+        <option value="Asia/Dhaka">Dhaka</option>
+        <option value="Asia/Yangon">Yangon</option>
+        <option value="Asia/Bangkok">Bangkok</option>
+        <option value="Asia/Ho_Chi_Minh">Ho Chi Minh City</option>
+        <option value="Asia/Jakarta">Jakarta</option>
+        <option value="Asia/Singapore">Singapore</option>
+        <option value="Asia/Kuala_Lumpur">Kuala Lumpur</option>
+        <option value="Asia/Manila">Manila</option>
+        <option value="Asia/Hong_Kong">Hong Kong</option>
+        <option value="Asia/Shanghai">Shanghai / Beijing</option>
+        <option value="Asia/Taipei">Taipei</option>
+        <option value="Asia/Seoul">Seoul</option>
+        <option value="Asia/Tokyo">Tokyo</option>
+      </optgroup>
+
+      <optgroup label="Australia & New Zealand">
+        <option value="Australia/Perth">Perth</option>
+        <option value="Australia/Darwin">Darwin</option>
+        <option value="Australia/Adelaide">Adelaide</option>
+        <option value="Australia/Brisbane">Brisbane</option>
+        <option value="Australia/Sydney">Sydney</option>
+        <option value="Australia/Melbourne">Melbourne</option>
+        <option value="Australia/Hobart">Hobart</option>
+        <option value="Pacific/Auckland">Auckland (NZ)</option>
+      </optgroup>
+
+      <optgroup label="Pacific">
+        <option value="Pacific/Guam">Guam</option>
+        <option value="Pacific/Fiji">Fiji</option>
+        <option value="Pacific/Tahiti">Tahiti</option>
+        <option value="Pacific/Pago_Pago">Pago Pago (American Samoa)</option>
+        <option value="Pacific/Apia">Apia (Samoa)</option>
+        <option value="Pacific/Tongatapu">Tongatapu</option>
+      </optgroup>
+
+      <optgroup label="Other">
+        <option value="UTC">UTC (no offset)</option>
+      </optgroup>
+    </select>
     <div class="hint">
-      IANA name, e.g. <code>America/Los_Angeles</code>,
-      <code>America/New_York</code>, <code>Europe/London</code>.
-      Full list: <code>timedatectl list-timezones</code>.
+      Used to display the "Last Seen" timestamp in your local time.
+      Choose "Auto-detect" to use your Homey's configured time zone.
     </div>
   </div>
 
@@ -175,7 +324,7 @@
       // DOM. The key is write-only from this page — once it has been saved
       // and pairing consumed it, the device-store copy is the source of truth
       // and the settings copy is cleared. We only signal whether one is set.
-      var readbackFields = ['fingbox_ip', 'fingbox_port', 'poll_interval', 'timezone'];
+      var readbackFields = ['fingbox_ip', 'fingbox_port', 'poll_interval'];
 
       readbackFields.forEach(function (key) {
         Homey.get(key, function (err, value) {
@@ -183,6 +332,28 @@
             document.getElementById(key).value = value;
           }
         });
+      });
+
+      // Timezone needs special handling because it's a <select>: if the
+      // saved value isn't one of the predefined options (e.g. user typed
+      // a custom IANA name via an earlier text-input version of this
+      // field), inject it dynamically so we don't silently overwrite it.
+      Homey.get('timezone', function (err, value) {
+        if (err || !value) return;
+        var sel = document.getElementById('timezone');
+        var match = Array.prototype.some.call(sel.options, function (opt) {
+          return opt.value === value;
+        });
+        if (!match) {
+          var customGroup = document.createElement('optgroup');
+          customGroup.label = 'Custom';
+          var opt = document.createElement('option');
+          opt.value       = value;
+          opt.textContent = value + ' (custom)';
+          customGroup.appendChild(opt);
+          sel.appendChild(customGroup);
+        }
+        sel.value = value;
       });
 
       // For the API key: show "configured" hint if one is currently stored,
